@@ -1,6 +1,6 @@
 # force_drugsell
 
-Drug sale runs. Bring 50 grams to a dealer and do the run he asks for: fly meth drops over Sandy Shores with a plane, take a boat out to sea and dump cocaine, or ride a scooter to five weed buyers. Come back and he pays you. Pairs with [force_drugs](https://github.com/Force-Developing/force_drugs), which gives the same items.
+Drug sale runs. Bring 50 grams to a dealer and do the run he asks for: fly meth drops over Blaine County with a plane, take a boat out to sea and dump cocaine, or ride a scooter to five weed buyers. Come back and he pays you. Pairs with [force_drugs](https://github.com/Force-Developing/force_drugs), which gives the same items.
 
 Free and open source. Works on ESX Legacy, QBCore and QBox.
 
