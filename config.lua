@@ -1,88 +1,131 @@
 Config = {}
 
------------------------------------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------METH----------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Prints extra info to the F8 / server console. Setup errors are always printed.
+Config.Debug = false
 
---Main Ped (Jesper)
-Config.MainPedPos = vector3(-1404.1535644531, -629.71197509766, 28.673377990723 - 0.985)
-Config.MainPedPosText = {x = -1404.1535644531, y = -629.71197509766, z = 28.673377990723}
-Config.MainPedHeading = 175.0
-Config.MainPedHash = 'cs_josef'
---Item
-Config.DrugItem = 'meth'
---Start Marker
-Config.StartMarker = vector3(-1404.1561279297, -630.37719726563, 28.673393249512 - 0.985)
---Start Vehicle
-Config.VehicleSpawn = {
-    {x = -1409.1976318359, y = -636.57086181641, z= 28.673374176025, h = 210.0, hasSpawned = false, vehicleHash = 'mesa'},
-}
-Config.AirPlanceSpawn = {
-    {x = 2131.8845214844, y = 4785.904296875, z= 40.970287322998, h = 20.0, hasSpawned = false, vehicleHash = 'velum2'},
-}
---Airplane
-Config.AirplanePos = vector3(2131.8845214844, 4785.904296875, 40.970287322998)
-Config.MethDestinations = {
-    {x = 932.75982666016, y = 3570.3115234375, z = 147.65585327148, hasSpawned = false, blipName = 'madebyforce', hasDelivered = false},
-    {x = 1558.4713134766, y = 3584.4912109375, z = 147.7477722168, hasSpawned = false, blipName = 'madebyforce', hasDelivered = false},
-    {x = 1718.5031738281, y = 3875.9106445313, z = 147.56378173828, hasSpawned = false, blipName = 'madebyforce', hasDelivered = false},
-    {x = 1340.4449462891, y = 4269.3657226563, z = 146.43304443359, hasSpawned = false, blipName = 'madebyforce', hasDelivered = false},
-    {x = 1701.3365478516, y = 4785.0317382813, z = 147.55024719238, hasSpawned = false, blipName = 'madebyforce', hasDelivered = false},
-    {x = 2418.7849121094, y = 5004.986328125, z = 147.77307128906, hasSpawned = false, blipName = 'madebyforce', hasDelivered = false},
-    {x = 2563.52734375, y = 4718.20703125, z = 168.78115844727, hasSpawned = false, blipName = 'madebyforce', hasDelivered = false},
-    {x = 2860.6572265625, y = 4359.1030273438, z = 161.98887634277, hasSpawned = false, blipName = 'madebyforce', hasDelivered = false},
-    {x = 1735.0725097656, y = 3282.4453125, z = 196.43481445313, hasSpawned = false, blipName = 'madebyforce', hasDelivered = false},
-}
-Config.deliveredPosistions = 9
-Config.RewardMoney = 30000
-Config.Object = {
-    {hasSpawned = false, objectHash = 'prop_drop_armscrate_01', objectName = 'madeByForce#3883'},
+-- "en", "sv" or "auto" (follows the replicated ox:locale convar: setr ox:locale "sv")
+Config.Locale = "en"
+
+-- "auto" (detected by the server: qbx_core, es_extended, qb-core), "esx", "qb", "qbx" or "custom"
+Config.Framework = "auto"
+
+-- "auto" (ox_target, then qb-target, else [E] + text UI), "ox_target", "qb-target" or "none" ([E] + text UI).
+-- Used for the dealers and the weed buyers. Stops you reach in a vehicle always use [E].
+Config.Target = "auto"
+
+-- How close (meters) the player has to stand to a dealer or a buyer. The server allows a small margin on top.
+Config.InteractDistance = 2.0
+
+-- Police needed online to start a sale. 0 = no requirement.
+Config.Police = {
+    jobs = { "police", "sheriff" },
+    minimum = 0,
+    onlyOnDuty = true, -- QBCore / QBox duty, ESX job.onDuty where your ESX version has it
 }
 
------------------------------------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------COKE----------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Only one player at a time per sale (their vehicles spawn on the same spots)
+Config.OneAtATime = true
 
---Coke Main Ped (Håkan)
-Config.CokePedMainPos = vector3(2471.9777832031, 4112.3701171875, 38.064697265625 - 0.985)
-Config.MainCokePedPosText = {x = 2471.9777832031, y = 4112.3701171875, z = 38.064697265625}
-Config.CokePedMainPosHeading = 75.0
-Config.CokePedMainHash = 'a_m_o_salton_01'
---CokeStartMarker
-Config.CokeStartMarker = vector3(2470.8505859375, 4112.7290039063, 38.064716339111 - 0.985)
---Item
-Config.CokeItem = 'coke'
---Main Vehicle
-Config.CokeMainVehicle = {
-    {hasSpawed = false, vehicleHash = 'blazer', x = 2472.3591308594, y = 4116.2109375, z = 38.064697265625, h = 330.0},
-}
---Coke Boat
-Config.CokeBoatMain = {
-    {hasSpawed = false, vehicleHash = 'dinghy', x = -2087.8386230469, y = 2607.1936035156, z = 0.1195353269577, h = 115.0, blipSpawned = false},
-}
---Drop Coke Pos
-Config.DropCokePos = vector3(-3926.8818359375, 2935.6413574219, 0.5860401391983)
---Reward Money
-Config.RewardMoneyCoke = 40000
+-- Minutes a sale may take. After that it is cancelled and its vehicles are removed.
+Config.MaxDuration = 45
 
------------------------------------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------WEED----------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Give the player keys for the sale vehicles (qbx_vehiclekeys, qb-vehiclekeys; see server/custom/frameworks)
+Config.GiveKeys = true
 
-Config.WeedMainPedPos = vector3(169.15658569336, 2779.0915527344, 45.702838897705 - 0.985)
-Config.WeedMainPedPosText = {x = 169.15658569336, y = 2779.0915527344, z = 45.702838897705}
-Config.WeedMainPedPosHeading = 100.0
-Config.WeedMainPedHash = 'a_m_y_soucent_02'
-Config.WeedStartMarker = vector3(168.34031677246, 2778.9011230469, 45.702835083008 - 0.985)
-Config.RewardMoneyWeed = 25000
-Config.WeedItem = 'weed'
-Config.WeedMainVehicle = {
-    {x = 170.85552978516, y = 2774.1130371094, z = 45.702831268311, h = 270.0, hasSpawned = false, vehicleHash = 'faggio', vehicleBlipSpawned = false},
-}
-Config.WeedSellPos = {
-    {hasDelivered = false, pedHasSpawned = false, blipHasSpawned = false, pedName = force1, pedHash = 'a_m_m_genfat_01', x = 257.30462646484, y = 3112.447265625, z = 42.487194061279 - 0.985, h = 275.0, nmr = 1},
-    {hasDelivered = false, pedHasSpawned = false, blipHasSpawned = false, pedName = force2, pedHash = 'a_m_m_ktown_01', x = 364.14105224609, y = 2616.6823730469, z = 44.492565155029 - 0.985, h = 210.0, nmr = 2},
-    {hasDelivered = false, pedHasSpawned = false, blipHasSpawned = false, pedName = force3, pedHash = 'a_m_m_farmer_01', x = 619.16265869141, y = 2784.6713867188, z = 43.481216430664 - 0.985, h = 0.0, nmr = 3},
-    {hasDelivered = false, pedHasSpawned = false, blipHasSpawned = false, pedName = force4, pedHash = 'a_m_m_mexlabor_01', x = 436.28753662109, y = 2996.4323730469, z = 41.283630371094 - 0.985, h = 20.0, nmr = 4},
-    {hasDelivered = false, pedHasSpawned = false, blipHasSpawned = false, pedName = force5, pedHash = 'a_m_m_paparazzi_01', x = 221.69412231445, y = 2581.89453125, z = 45.815498352051 - 0.985, h = 200.0, nmr = 5},
+-- Draw what to do next at the bottom of the screen during a sale
+Config.ShowHints = true
+
+--[[
+  The sales. The key is the sale id.
+  label    = name of the drug in texts
+  item     = item the dealer buys (the same items force_drugs gives)
+  amount   = items needed to start, taken when the reward is paid
+  reward   = money paid at the end
+  account  = "cash", "bank" or "dirty" (ESX black_money; QBox / ox_inventory black_money item; QBCore markedbills)
+  dealer   = { name, model, coords = vec4, scenario or anim = { dict, clip }, blip = false | { sprite, colour, scale } }
+  vehicles = sale vehicles, spawned by the server. { model, coords = vec4, type, label, spawnDistance }
+             type: "automobile", "bike", "boat", "plane", "heli". Without spawnDistance the vehicle spawns when the
+             sale starts; with it, when the player gets that close.
+  stops    = what has to be done, in order of `group` (stops with the same group can be done in any order):
+             type = "drop"   fly / drive through coords (radius) in `vehicle` and press E (prop falls when set)
+                    "dump"   be in `vehicle` at coords, press E, then wait `duration` seconds
+                    "sell"   walk up to the buyer ped at coords and sell (takes `duration` seconds)
+                    "return" bring `vehicle` back to coords and leave it (the vehicle is removed)
+]]
+Config.Sales = {
+    meth = {
+        label = "Meth",
+        item = "meth",
+        amount = 50,
+        reward = 30000,
+        account = "cash",
+        dealer = {
+            name = "Jesper",
+            model = "cs_josef",
+            coords = vec4(-1404.15, -629.71, 27.69, 175.0),
+            scenario = "WORLD_HUMAN_SMOKING",
+            blip = false,
+        },
+        vehicles = {
+            car = { model = "mesa", type = "automobile", label = "your car", coords = vec4(-1409.20, -636.57, 28.67, 210.0) },
+            plane = { model = "velum2", type = "plane", label = "your plane", coords = vec4(2131.88, 4785.90, 40.97, 20.0), spawnDistance = 50.0 },
+        },
+        stops = {
+            { type = "drop", group = 1, vehicle = "plane", radius = 35.0, prop = "prop_drop_armscrate_01", coords = vec3(932.76, 3570.31, 147.66) },
+            { type = "drop", group = 1, vehicle = "plane", radius = 35.0, prop = "prop_drop_armscrate_01", coords = vec3(1558.47, 3584.49, 147.75) },
+            { type = "drop", group = 1, vehicle = "plane", radius = 35.0, prop = "prop_drop_armscrate_01", coords = vec3(1718.50, 3875.91, 147.56) },
+            { type = "drop", group = 1, vehicle = "plane", radius = 35.0, prop = "prop_drop_armscrate_01", coords = vec3(1340.44, 4269.37, 146.43) },
+            { type = "drop", group = 1, vehicle = "plane", radius = 35.0, prop = "prop_drop_armscrate_01", coords = vec3(1701.34, 4785.03, 147.55) },
+            { type = "drop", group = 1, vehicle = "plane", radius = 35.0, prop = "prop_drop_armscrate_01", coords = vec3(2418.78, 5004.99, 147.77) },
+            { type = "drop", group = 1, vehicle = "plane", radius = 35.0, prop = "prop_drop_armscrate_01", coords = vec3(2563.53, 4718.21, 168.78) },
+            { type = "drop", group = 1, vehicle = "plane", radius = 35.0, prop = "prop_drop_armscrate_01", coords = vec3(2860.66, 4359.10, 161.99) },
+            { type = "drop", group = 1, vehicle = "plane", radius = 35.0, prop = "prop_drop_armscrate_01", coords = vec3(1735.07, 3282.45, 196.43) },
+            { type = "return", group = 2, vehicle = "plane", radius = 10.0, coords = vec3(2131.88, 4785.90, 40.97) },
+        },
+    },
+    coke = {
+        label = "Cocaine",
+        item = "coke",
+        amount = 50,
+        reward = 40000,
+        account = "cash",
+        dealer = {
+            name = "Håkan",
+            model = "a_m_o_salton_01",
+            coords = vec4(2471.98, 4112.37, 37.08, 75.0),
+            anim = { dict = "anim@heists@fleeca_bank@ig_7_jetski_owner", clip = "owner_idle" },
+            blip = false,
+        },
+        vehicles = {
+            quad = { model = "blazer", type = "automobile", label = "your quad", coords = vec4(2472.36, 4116.21, 38.06, 330.0) },
+            boat = { model = "dinghy", type = "boat", label = "your boat", coords = vec4(-2087.84, 2607.19, 0.12, 115.0), spawnDistance = 80.0 },
+        },
+        stops = {
+            { type = "dump", group = 1, vehicle = "boat", radius = 20.0, duration = 60, coords = vec3(-3926.88, 2935.64, 0.59) },
+        },
+    },
+    weed = {
+        label = "Weed",
+        item = "weed",
+        amount = 50,
+        reward = 25000,
+        account = "cash",
+        dealer = {
+            name = "Apon",
+            model = "a_m_y_soucent_02",
+            coords = vec4(169.16, 2779.09, 44.72, 100.0),
+            blip = false,
+        },
+        vehicles = {
+            scooter = { model = "faggio", type = "bike", label = "your scooter", coords = vec4(170.86, 2774.11, 45.70, 270.0) },
+        },
+        stops = {
+            { type = "sell", group = 1, radius = 3.0, duration = 10, buyer = { model = "a_m_m_genfat_01", heading = 275.0 }, coords = vec3(257.30, 3112.45, 41.50) },
+            { type = "sell", group = 2, radius = 3.0, duration = 10, buyer = { model = "a_m_m_ktown_01", heading = 210.0 }, coords = vec3(364.14, 2616.68, 43.51) },
+            { type = "sell", group = 3, radius = 3.0, duration = 10, buyer = { model = "a_m_m_farmer_01", heading = 0.0 }, coords = vec3(619.16, 2784.67, 42.50) },
+            { type = "sell", group = 4, radius = 3.0, duration = 10, buyer = { model = "a_m_m_mexlabor_01", heading = 20.0 }, coords = vec3(436.29, 2996.43, 40.30) },
+            { type = "sell", group = 5, radius = 3.0, duration = 10, buyer = { model = "a_m_m_paparazzi_01", heading = 200.0 }, coords = vec3(221.69, 2581.89, 44.83) },
+            { type = "return", group = 6, vehicle = "scooter", radius = 3.0, coords = vec3(170.86, 2774.11, 45.70) },
+        },
+    },
 }
