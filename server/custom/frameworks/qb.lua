@@ -61,6 +61,7 @@ RegisterFramework("qb", function()
 
   --- qb-vehiclekeys (Config.GiveKeys)
   function GiveVehicleKeys(source, vehicle, plate)
+    if GetResourceState("qb-vehiclekeys") ~= "started" then return end
     TriggerClientEvent("vehiclekeys:client:SetOwner", source, plate)
   end
 

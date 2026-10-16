@@ -231,7 +231,6 @@ local function checkStop(source, running, index)
   local stop = index and sale.stops[index]
   if not stop or running.done[index] then return nil, "failed" end
   if stop.group ~= GetCurrentGroup(sale, running.done) then return nil, "failed" end
-  if GetGameTimer() - running.lastStop < STOP_INTERVAL_MS then return nil, "too_fast" end
   return stop
 end
 
@@ -271,6 +270,7 @@ lib.callback.register(RESOURCE .. ":server:complete", function(source, index)
   if expire(source) then return false, "expired" end
   local stop, reason = checkStop(source, running, index)
   if not stop then return false, reason end
+  if GetGameTimer() - running.lastStop < STOP_INTERVAL_MS then return false, "too_fast" end
   if stop.duration > 0 then
     local begun = running.begun
     if not begun or begun.index ~= stop.index or GetGameTimer() - begun.at < stop.duration - FINISH_EARLY_MS then
