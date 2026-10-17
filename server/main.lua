@@ -81,7 +81,7 @@ end
 --- Ends a sale that ran past Config.MaxDuration and tells the client. Returns true when it did.
 local function expire(source)
   local running = sales[source]
-  if not running or GetGameTimer() <= running.deadline then return false end
+  if not running or running.finishing or GetGameTimer() <= running.deadline then return false end
   endSale(source, "max duration")
   TriggerClientEvent(RESOURCE .. ":client:ended", source, "expired")
   return true
@@ -294,9 +294,30 @@ lib.callback.register(RESOURCE .. ":server:complete", function(source, index)
   return true, done, #sale.stops
 end)
 
+--- Takes the drugs, then pays the reward; gives the drugs back when the payment fails.
+--- The sale stays open when the player no longer has the drugs or the payment failed.
+--- @return boolean paid, string|nil reason
+local function payout(source, sale)
+  local count = GetItemCount(source, sale.item)
+  if not count then return false, "not_ready" end
+  if count < sale.amount then return false, "not_enough_drugs" end
+  if not RemoveItem(source, sale.item, sale.amount) then return false, "not_enough_drugs" end
+
+  local okPay, paid = pcall(AddMoney, source, sale.account, sale.reward)
+  if okPay and paid then return true end
+  Log("error", ("Paying $%s (%s) to %s failed%s; giving back %sx %s"):format(sale.reward, sale.account,
+    tostring(GetPlayerName(source)), okPay and "" or (": " .. tostring(paid)), sale.amount, sale.item))
+  if not AddItem(source, sale.item, sale.amount) then
+    Log("error", ("Could not give back %sx %s to player %s (%s)"):format(sale.amount, sale.item, tostring(source),
+      tostring(GetPlayerName(source))))
+  end
+  return false, "payment_failed"
+end
+
 lib.callback.register(RESOURCE .. ":server:finish", function(source)
   local running = sales[source]
   if not running then return false, "no_sale" end
+  if running.finishing then return false, "busy" end
   if expire(source) then return false, "expired" end
   local sale = GetSale(running.id)
   -- The character changed (logout / multichar) since the sale started: it belonged to the old one
@@ -307,22 +328,15 @@ lib.callback.register(RESOURCE .. ":server:finish", function(source)
   if GetCurrentGroup(sale, running.done) then return false, "not_done" end
   if not isNear(source, sale.dealer.position, GetInteractDistance()) then return false, "too_far" end
 
-  -- The drugs are taken first; the sale stays open when the player no longer has them
-  local count = GetItemCount(source, sale.item)
-  if not count then return false, "not_ready" end
-  if count < sale.amount then return false, "not_enough_drugs" end
-  if not RemoveItem(source, sale.item, sale.amount) then return false, "not_enough_drugs" end
-
-  local okPay, paid = pcall(AddMoney, source, sale.account, sale.reward)
-  if not okPay or not paid then
-    Log("error", ("Paying $%s (%s) to %s failed%s; giving back %sx %s"):format(sale.reward, sale.account,
-      tostring(GetPlayerName(source)), okPay and "" or (": " .. tostring(paid)), sale.amount, sale.item))
-    if not AddItem(source, sale.item, sale.amount) then
-      Log("error", ("Could not give back %sx %s to player %s (%s)"):format(sale.amount, sale.item, tostring(source),
-        tostring(GetPlayerName(source))))
-    end
+  -- Inventory and money exports may yield: a second finish (or a cancel) must not run while this one pays
+  running.finishing = true
+  local okRun, paid, reason = pcall(payout, source, sale)
+  running.finishing = nil
+  if not okRun then
+    Log("error", ("Paying the sale failed: %s"):format(tostring(paid)))
     return false, "payment_failed"
   end
+  if not paid then return false, reason end
 
   endSale(source, "paid")
   Debug("info", "%s sold %sx %s for $%s (%s)", tostring(GetPlayerName(source)), sale.amount, sale.item, sale.reward, sale.account)
@@ -333,6 +347,8 @@ end)
 -- The player cancelled the sale. The drugs stay with the player.
 RegisterNetEvent(RESOURCE .. ":server:cancel", function()
   local src = source
+  -- A payout in progress decides the sale; it ends the sale itself
+  if sales[src] and sales[src].finishing then return end
   endSale(src, "cancelled")
 end)
 
